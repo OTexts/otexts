@@ -1,0 +1,20 @@
+url: https://otexts.github.io/otexts/
+template:
+  bootstrap: 5
+
+reference:
+  - title: Setting up a book
+    contents:
+      - setup_book
+      - register_book_fonts
+      - set_book_options
+      - set_book_theme
+  - title: Plots
+    contents:
+      - tex
+      - theme_book_void
+      - book_colours
+  - title: Other helpers
+    contents:
+      - cache
+      - html_math

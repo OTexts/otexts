@@ -1,0 +1,33 @@
+Package: otexts
+Title: Shared Setup for OTexts Books
+Version: 0.1.0
+Authors@R:
+    person("Rob J", "Hyndman", , "Rob.Hyndman@monash.edu", role = c("aut", "cre", "cph"),
+           comment = c(ORCID = "0000-0002-2140-5352"))
+Description: Shared R setup for the OTexts books written with Quarto: the
+    'ggplot2' theme, colour palette and printing options used in the books,
+    maths in plot labels set in the same fonts as 'KaTeX' maths in the text,
+    and a simple cache for long computations. Companion to the 'otexts'
+    Quarto format extension.
+License: MIT + file LICENSE
+URL: https://github.com/OTexts/otexts, https://otexts.github.io/otexts/
+BugReports: https://github.com/OTexts/otexts/issues
+Depends:
+    R (>= 4.1.0)
+Imports:
+    ggplot2 (>= 4.0.0),
+    here,
+    latex2exp,
+    rlang,
+    systemfonts (>= 1.0.0)
+Suggests:
+    conflicted,
+    ggraph,
+    ggrepel,
+    ragg,
+    testthat (>= 3.0.0),
+    withr
+Config/testthat/edition: 3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.1.1
