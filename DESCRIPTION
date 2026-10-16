@@ -18,6 +18,7 @@ Imports:
     ggplot2 (>= 4.0.0),
     here,
     latex2exp,
+    parallel,
     rlang,
     systemfonts (>= 1.0.0)
 Suggests:

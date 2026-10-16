@@ -44,6 +44,15 @@ ggplot(mtcars, aes(wt, mpg)) +
   labs(x = TeX("Weight ($w$)"), y = TeX("$\\hat{y}_i$"))
 ```
 
+After each render, `post_render()` tidies the HTML with the otexts Quarto
+format's `htmlreplace.pl` and compresses the figures with
+[pngquant](https://pngquant.org), which must be installed. A book runs it from
+`post-render.R`, set with `project: post-render` in `_quarto.yml`:
+
+```r
+otexts::post_render()
+```
+
 Other helpers: `cache()` saves long computations in `rds/`, and `html_math()`
 marks up maths in raw HTML for KaTeX.
 

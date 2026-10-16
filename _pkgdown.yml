@@ -14,6 +14,9 @@ reference:
       - tex
       - theme_book_void
       - book_colours
+  - title: Rendering
+    contents:
+      - post_render
   - title: Other helpers
     contents:
       - cache

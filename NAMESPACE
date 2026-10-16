@@ -3,6 +3,8 @@
 export(book_colours)
 export(cache)
 export(html_math)
+export(post_render)
+export(quarto_output_files)
 export(register_book_fonts)
 export(set_book_options)
 export(set_book_theme)
