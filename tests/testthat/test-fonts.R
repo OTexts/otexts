@@ -18,6 +18,15 @@ test_that("register_book_fonts() registers BookMath with KaTeX maths faces", {
   expect_equal(paths[["Bold Italic"]], font_path("KaTeX_Math_Plot-BoldItalic"))
 })
 
+test_that("register_book_fonts() sets plotmath symbols in KaTeX_Main", {
+  skip_if_no_fira_sans()
+  register_book_fonts()
+  expect_equal(
+    systemfonts::match_fonts("symbol")$path,
+    font_path("KaTeX_Main_Plot-Regular")
+  )
+})
+
 test_that("register_book_fonts() uses the installed Fira Sans for text", {
   skip_if_no_fira_sans()
   register_book_fonts()

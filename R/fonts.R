@@ -9,6 +9,12 @@
 #' The KaTeX fonts are copies scaled up by 1.2, so that their x-height matches
 #' that of Fira Sans.
 #'
+#' It also registers KaTeX_Main as the "symbol" family, which plotmath uses for
+#' operators and symbols such as `+`, `=`, `<=` and `infinity`, so that they
+#' match the maths in the text rather than the system's symbol font. KaTeX_Main
+#' has no lower-case Greek, so write Greek letters with [tex()], which sets them
+#' in KaTeX_Math, rather than as plotmath symbols such as `alpha`.
+#'
 #' The text font must be installed. Fira Sans covers Latin, Greek and Cyrillic.
 #' A translation into a language in another script can use an installed font
 #' that covers it, such as `text_font = "Noto Sans CJK SC"`.
@@ -36,6 +42,11 @@ register_book_fonts <- function(text_font = "Fira Sans") {
     bold = font_file("KaTeX_Main_Plot-Regular"),
     italic = font_file("KaTeX_Math_Plot-Italic"),
     bolditalic = font_file("KaTeX_Math_Plot-BoldItalic")
+  )
+  # Plotmath draws operators and symbols in the "symbol" family
+  systemfonts::register_font(
+    name = "symbol",
+    plain = font_file("KaTeX_Main_Plot-Regular")
   )
   invisible("BookMath")
 }
