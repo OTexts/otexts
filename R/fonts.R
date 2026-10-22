@@ -15,25 +15,33 @@
 #' has no lower-case Greek, so write Greek letters with [tex()], which sets them
 #' in KaTeX_Math, rather than as plotmath symbols such as `alpha`.
 #'
-#' The text font must be installed. Fira Sans covers Latin, Greek and Cyrillic.
-#' A translation into a language in another script can use an installed font
-#' that covers it, such as `text_font = "Noto Sans CJK SC"`.
+#' Fira Sans is bundled with the package, and is registered as the "Fira Sans"
+#' family when it isn't installed, so `family = "Fira Sans"` works in plots
+#' either way. Any other text font must be installed. Fira Sans covers Latin,
+#' Greek and Cyrillic. A translation into a language in another script can use
+#' an installed font that covers it, such as `text_font = "Noto Sans CJK SC"`.
 #'
 #' As BookMath's bold and italic faces are KaTeX fonts, bold or italic text
 #' must use the text font's own family instead, e.g.
 #' `geom_text(family = "Fira Sans", fontface = "bold")`.
 #'
 #' @param text_font The family of the plain face of BookMath, and so of the text
-#'   in plots. It must be installed.
+#'   in plots. It must be installed, unless it is Fira Sans.
 #' @returns The name of the maths family, `"BookMath"`, invisibly.
 #' @seealso [tex()], [set_book_theme()].
 #' @export
-#' @examplesIf "Fira Sans" %in% systemfonts::system_fonts()$family
+#' @examples
 #' register_book_fonts()
 #' "BookMath" %in% systemfonts::registry_fonts()$family
 register_book_fonts <- function(text_font = "Fira Sans") {
-  font_file <- function(file) {
-    system.file("fonts", paste0(file, ".ttf"), package = "otexts", mustWork = TRUE)
+  if (identical(text_font, "Fira Sans") && !font_installed(text_font)) {
+    systemfonts::register_font(
+      name = "Fira Sans",
+      plain = font_file("FiraSans-Regular"),
+      bold = font_file("FiraSans-Bold"),
+      italic = font_file("FiraSans-Italic"),
+      bolditalic = font_file("FiraSans-BoldItalic")
+    )
   }
   # Registered afresh each time, so a change to the font files is picked up
   systemfonts::register_font(
@@ -51,12 +59,20 @@ register_book_fonts <- function(text_font = "Fira Sans") {
   invisible("BookMath")
 }
 
-# Path of the regular face of an installed font family, checking that the font
+font_file <- function(file) {
+  system.file("fonts", paste0(file, ".ttf"), package = "otexts", mustWork = TRUE)
+}
+
+# Whether a font family is installed (or registered), checking that the font
 # found is that family: systemfonts falls back to a default font otherwise
-installed_font <- function(family, call = rlang::caller_env()) {
+font_installed <- function(family) {
   path <- systemfonts::match_fonts(family)$path
-  found <- systemfonts::font_info(path = path)$family
-  if (!identical(found, family)) {
+  identical(systemfonts::font_info(path = path)$family, family)
+}
+
+# Path of the regular face of an installed font family
+installed_font <- function(family, call = rlang::caller_env()) {
+  if (!font_installed(family)) {
     rlang::abort(
       c(
         sprintf("Font family \"%s\" is not installed.", family),
@@ -65,5 +81,5 @@ installed_font <- function(family, call = rlang::caller_env()) {
       call = call
     )
   }
-  path
+  systemfonts::match_fonts(family)$path
 }

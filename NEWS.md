@@ -4,5 +4,8 @@
   `register_book_fonts()`, `set_book_options()`, `set_book_theme()`,
   `book_colours()`, `theme_book_void()`, `tex()`, `cache()` and `html_math()`.
 
+* Fira Sans is bundled, and `register_book_fonts()` registers it when it isn't
+  installed, so plots no longer need Fira Sans on the system.
+
 * `post_render()` tidies a book's rendered HTML with the otexts Quarto format's
   `htmlreplace.pl`, and compresses its figures with pngquant.

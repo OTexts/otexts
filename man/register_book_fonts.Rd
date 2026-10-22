@@ -8,7 +8,7 @@ register_book_fonts(text_font = "Fira Sans")
 }
 \arguments{
 \item{text_font}{The family of the plain face of BookMath, and so of the text
-in plots. It must be installed.}
+in plots. It must be installed, unless it is Fira Sans.}
 }
 \value{
 The name of the maths family, \code{"BookMath"}, invisibly.
@@ -30,19 +30,19 @@ match the maths in the text rather than the system's symbol font. KaTeX_Main
 has no lower-case Greek, so write Greek letters with \code{\link[=tex]{tex()}}, which sets them
 in KaTeX_Math, rather than as plotmath symbols such as \code{alpha}.
 
-The text font must be installed. Fira Sans covers Latin, Greek and Cyrillic.
-A translation into a language in another script can use an installed font
-that covers it, such as \code{text_font = "Noto Sans CJK SC"}.
+Fira Sans is bundled with the package, and is registered as the "Fira Sans"
+family when it isn't installed, so \code{family = "Fira Sans"} works in plots
+either way. Any other text font must be installed. Fira Sans covers Latin,
+Greek and Cyrillic. A translation into a language in another script can use
+an installed font that covers it, such as \code{text_font = "Noto Sans CJK SC"}.
 
 As BookMath's bold and italic faces are KaTeX fonts, bold or italic text
 must use the text font's own family instead, e.g.
 \code{geom_text(family = "Fira Sans", fontface = "bold")}.
 }
 \examples{
-\dontshow{if ("Fira Sans" \%in\% systemfonts::system_fonts()$family) withAutoprint(\{ # examplesIf}
 register_book_fonts()
 "BookMath" \%in\% systemfonts::registry_fonts()$family
-\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=tex]{tex()}}, \code{\link[=set_book_theme]{set_book_theme()}}.

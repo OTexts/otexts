@@ -20,5 +20,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-The KaTeX fonts in `inst/fonts/` have their own licence (MIT,
-`LICENSE-KaTeX.txt`).
+The fonts in `inst/fonts/` have their own licences: KaTeX (MIT,
+`LICENSE-KaTeX.txt`) and Fira Sans (SIL Open Font License 1.1,
+`LICENSE-FiraSans.txt`).

@@ -61,7 +61,8 @@ installed font for plot text, e.g. `setup_book(text_font = "Noto Sans CJK SC")`.
 
 ## Fonts
 
-Plot text is in [Fira Sans](https://fonts.google.com/specimen/Fira+Sans), which
-must be installed. The fonts in `inst/fonts/` are copies of KaTeX's maths fonts
-(MIT licence), scaled up by 1.2 to match Fira Sans by
-`data-raw/make_plot_fonts.py`.
+Plot text is in [Fira Sans](https://fonts.google.com/specimen/Fira+Sans). The
+installed font is used if there is one; otherwise the copy in `inst/fonts/`
+(version 4.203, SIL Open Font License). The other fonts in `inst/fonts/` are
+copies of KaTeX's maths fonts (MIT licence), scaled up by 1.2 to match Fira Sans
+by `data-raw/make_plot_fonts.py`.

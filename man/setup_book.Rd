@@ -14,7 +14,7 @@ setup_book(
 }
 \arguments{
 \item{text_font}{The family of the plain face of BookMath, and so of the text
-in plots. It must be installed.}
+in plots. It must be installed, unless it is Fira Sans.}
 
 \item{digits}{Number of significant digits to print.}
 
