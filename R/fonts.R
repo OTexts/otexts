@@ -64,13 +64,17 @@ font_file <- function(file) {
 }
 
 # Whether a font family is installed (or registered), checking that the font
-# found is that family: systemfonts falls back to a default font otherwise
+# found is that family: systemfonts falls back to a default font otherwise.
+# The face index matters for font collections (.ttc), such as Noto Sans CJK,
+# where face 0 is a different family
 font_installed <- function(family) {
-  path <- systemfonts::match_fonts(family)$path
-  identical(systemfonts::font_info(path = path)$family, family)
+  font <- systemfonts::match_fonts(family)
+  info <- systemfonts::font_info(path = font$path, index = font$index)
+  identical(info$family, family)
 }
 
-# Path of the regular face of an installed font family
+# The regular face of an installed font family, as list(path, index) for
+# systemfonts::register_font()
 installed_font <- function(family, call = rlang::caller_env()) {
   if (!font_installed(family)) {
     rlang::abort(
@@ -81,5 +85,6 @@ installed_font <- function(family, call = rlang::caller_env()) {
       call = call
     )
   }
-  systemfonts::match_fonts(family)$path
+  font <- systemfonts::match_fonts(family)
+  list(font$path, font$index)
 }

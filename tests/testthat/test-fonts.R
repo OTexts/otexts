@@ -59,6 +59,24 @@ test_that("register_book_fonts() doesn't register Fira Sans if it is installed",
   expect_false("Fira Sans" %in% systemfonts::registry_fonts()$family)
 })
 
+test_that("register_book_fonts() uses the right face of a font collection", {
+  # A family that is not the first face of a .ttc file, e.g. Noto Sans CJK KR
+  # (system_fonts() reports index 0 for every face, so ask match_fonts())
+  fonts <- systemfonts::system_fonts()
+  families <- unique(fonts$family[grepl("\\.ttc$", fonts$path)])
+  index <- vapply(families, function(f) systemfonts::match_fonts(f)$index, integer(1))
+  skip_if(!any(index > 0), "No font collection with several faces installed")
+  family <- families[index > 0][1]
+  register_book_fonts(text_font = family)
+  withr::defer(register_book_fonts())
+  fonts <- systemfonts::registry_fonts()
+  regular <- fonts[fonts$family == "BookMath" & fonts$style == "Regular", ]
+  expect_equal(
+    systemfonts::font_info(path = regular$path, index = regular$index)$family,
+    family
+  )
+})
+
 test_that("register_book_fonts() errors for a font that isn't installed", {
   expect_snapshot(
     register_book_fonts(text_font = "No Such Font Family"),
