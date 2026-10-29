@@ -83,3 +83,56 @@ test_that("register_book_fonts() errors for a font that isn't installed", {
     error = TRUE
   )
 })
+
+# fc-match as a cairo device would see the fonts, with the otexts config
+fc_match <- function(pattern) {
+  system2(
+    "fc-match",
+    c("--format='%{family[0]}:%{style[0]}'", shQuote(pattern)),
+    stdout = TRUE,
+    env = paste0("FONTCONFIG_FILE=", Sys.getenv("FONTCONFIG_FILE"))
+  )
+}
+
+test_that("register_book_fonts() defines BookMath for fontconfig", {
+  skip_if(Sys.which("fc-match") == "", "fontconfig is not installed")
+  withr::local_envvar(FONTCONFIG_FILE = NA)
+  local_fontconfig_reset()
+  register_book_fonts()
+  expect_equal(fc_match("BookMath"), "Fira Sans:Regular")
+  expect_equal(fc_match("BookMath:italic"), "KaTeX_Math_Plot:Italic")
+  expect_equal(fc_match("BookMath:bold:italic"), "KaTeX_Math_Plot:Bold Italic")
+  expect_equal(fc_match("BookMath:bold"), "KaTeX_Main_Plot:Regular")
+  expect_equal(fc_match("KaTeX_Main_Plot"), "KaTeX_Main_Plot:Regular")
+  # The system's fonts are still there
+  expect_equal(fc_match("Fira Sans:bold"), "Fira Sans:Bold")
+})
+
+test_that("register_book_fonts() includes an existing FONTCONFIG_FILE", {
+  base <- withr::local_tempfile(fileext = ".conf")
+  withr::local_envvar(FONTCONFIG_FILE = base)
+  local_fontconfig_reset()
+  register_book_fonts()
+  conf <- readLines(Sys.getenv("FONTCONFIG_FILE"))
+  expect_true(any(grepl(base, conf, fixed = TRUE)))
+  # Called again, it still includes that file, not its own
+  register_book_fonts()
+  conf <- readLines(Sys.getenv("FONTCONFIG_FILE"))
+  expect_true(any(grepl(base, conf, fixed = TRUE)))
+})
+
+test_that("fontconfig_xml() escapes the font names", {
+  xml <- fontconfig_xml("A & B <Sans>", "fonts.conf")
+  expect_true(any(grepl("<string>A &amp; B &lt;Sans&gt;</string>", xml, fixed = TRUE)))
+})
+
+test_that("register_book_fonts() sets FONTCONFIG_FILE before systemfonts starts fontconfig", {
+  withr::local_envvar(FONTCONFIG_FILE = NA)
+  seen <- NULL
+  local_mocked_bindings(font_installed = function(family) {
+    seen <<- Sys.getenv("FONTCONFIG_FILE")
+    TRUE
+  })
+  register_book_fonts()
+  expect_equal(seen, file.path(tempdir(), "otexts-fonts.conf"))
+})

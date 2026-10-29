@@ -39,6 +39,17 @@ an installed font that covers it, such as \code{text_font = "Noto Sans CJK SC"}.
 As BookMath's bold and italic faces are KaTeX fonts, bold or italic text
 must use the text font's own family instead, e.g.
 \code{geom_text(family = "Fira Sans", fontface = "bold")}.
+
+Cairo devices, such as \code{\link[grDevices:cairo_pdf]{grDevices::cairo_pdf()}} (used by the otexts PDF
+format), find fonts with fontconfig rather than systemfonts. So BookMath is
+also defined in a fontconfig file, which the \code{FONTCONFIG_FILE} environment
+variable points to. It adds the fonts bundled with the package to the
+system's fonts. Fontconfig reads it only once per R session, when it is
+first used (by systemfonts or a cairo device), so call
+\code{register_book_fonts()} before anything looks for a font, such as at the
+start of each chapter with \code{\link[=setup_book]{setup_book()}}. In those devices,
+plotmath symbols use KaTeX_Main only if the device is told to, with
+\code{symbolfamily = "KaTeX_Main_Plot"} (the otexts PDF format does this).
 }
 \examples{
 register_book_fonts()

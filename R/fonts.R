@@ -25,6 +25,17 @@
 #' must use the text font's own family instead, e.g.
 #' `geom_text(family = "Fira Sans", fontface = "bold")`.
 #'
+#' Cairo devices, such as [grDevices::cairo_pdf()] (used by the otexts PDF
+#' format), find fonts with fontconfig rather than systemfonts. So BookMath is
+#' also defined in a fontconfig file, which the `FONTCONFIG_FILE` environment
+#' variable points to. It adds the fonts bundled with the package to the
+#' system's fonts. Fontconfig reads it only once per R session, when it is
+#' first used (by systemfonts or a cairo device), so call
+#' `register_book_fonts()` before anything looks for a font, such as at the
+#' start of each chapter with [setup_book()]. In those devices,
+#' plotmath symbols use KaTeX_Main only if the device is told to, with
+#' `symbolfamily = "KaTeX_Main_Plot"` (the otexts PDF format does this).
+#'
 #' @param text_font The family of the plain face of BookMath, and so of the text
 #'   in plots. It must be installed, unless it is Fira Sans.
 #' @returns The name of the maths family, `"BookMath"`, invisibly.
@@ -34,6 +45,8 @@
 #' register_book_fonts()
 #' "BookMath" %in% systemfonts::registry_fonts()$family
 register_book_fonts <- function(text_font = "Fira Sans") {
+  # Before systemfonts first looks for a font, which starts fontconfig
+  register_fontconfig(text_font)
   if (identical(text_font, "Fira Sans") && !font_installed(text_font)) {
     systemfonts::register_font(
       name = "Fira Sans",
@@ -57,6 +70,66 @@ register_book_fonts <- function(text_font = "Fira Sans") {
     plain = font_file("KaTeX_Main_Plot-Regular")
   )
   invisible("BookMath")
+}
+
+# The FONTCONFIG_FILE in place before the first call, which the otexts file
+# includes in place of the system's configuration
+fontconfig <- new.env(parent = emptyenv())
+
+# Defines BookMath for fontconfig, with the same faces as in systemfonts
+register_fontconfig <- function(text_font) {
+  file <- file.path(tempdir(), "otexts-fonts.conf")
+  if (is.null(fontconfig$base)) {
+    current <- Sys.getenv("FONTCONFIG_FILE")
+    # A relative name is looked up where fontconfig keeps its configuration
+    fontconfig$base <- if (nzchar(current) && current != file) current else "fonts.conf"
+  }
+  writeLines(fontconfig_xml(text_font, fontconfig$base), file)
+  Sys.setenv(FONTCONFIG_FILE = file)
+  invisible(file)
+}
+
+fontconfig_xml <- function(text_font, base) {
+  # Each rule renames a request for BookMath in a given face; the first that
+  # matches wins, so bold italic (KaTeX_Math) comes before bold (KaTeX_Main)
+  rule <- function(tests, family, extra = NULL) {
+    c(
+      "  <match target=\"pattern\">",
+      "    <test name=\"family\"><string>BookMath</string></test>",
+      tests,
+      sprintf(
+        "    <edit name=\"family\" mode=\"assign\" binding=\"strong\"><string>%s</string></edit>",
+        xml_escape(family)
+      ),
+      extra,
+      "  </match>"
+    )
+  }
+  c(
+    "<?xml version=\"1.0\"?>",
+    "<!DOCTYPE fontconfig SYSTEM \"urn:fontconfig:fonts.dtd\">",
+    "<!-- The BookMath family of the otexts R package, for cairo devices -->",
+    "<fontconfig>",
+    sprintf("  <include ignore_missing=\"yes\">%s</include>", xml_escape(base)),
+    sprintf("  <dir>%s</dir>", xml_escape(system.file("fonts", package = "otexts"))),
+    rule(
+      "    <test name=\"slant\" compare=\"more\"><const>roman</const></test>",
+      "KaTeX_Math_Plot"
+    ),
+    rule(
+      "    <test name=\"weight\" compare=\"more\"><const>medium</const></test>",
+      "KaTeX_Main_Plot",
+      "    <edit name=\"weight\" mode=\"assign\"><const>regular</const></edit>"
+    ),
+    rule(NULL, text_font),
+    "</fontconfig>"
+  )
+}
+
+xml_escape <- function(x) {
+  x <- gsub("&", "&amp;", x, fixed = TRUE)
+  x <- gsub("<", "&lt;", x, fixed = TRUE)
+  gsub(">", "&gt;", x, fixed = TRUE)
 }
 
 font_file <- function(file) {
