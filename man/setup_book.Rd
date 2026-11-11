@@ -8,7 +8,7 @@ setup_book(
   text_font = "Fira Sans",
   digits = 4,
   width = 88,
-  prefer = c(select = "dplyr", filter = "dplyr"),
+  prefer = c(select = "dplyr", filter = "dplyr", count = "dplyr"),
   env = rlang::caller_env()
 )
 }
