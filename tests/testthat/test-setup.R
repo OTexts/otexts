@@ -17,3 +17,12 @@ test_that("setup_book() sets the fonts, options and theme", {
   expect_equal(getOption("width"), 60)
   expect_equal(ggplot2::theme_get()$text$family, "BookMath")
 })
+
+test_that("setup_book() defines the preferred functions in env", {
+  skip_if_no_fira_sans()
+  local_book_theme_reset()
+  withr::local_options(digits = 7)
+  env <- new.env()
+  setup_book(prefer = c(filter = "stats"), env = env)
+  expect_identical(env$filter, stats::filter)
+})

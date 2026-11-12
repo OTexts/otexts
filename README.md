@@ -28,8 +28,9 @@ This
 * sets printing options, and the Okabe-Ito and viridis palettes as ggplot2's
   default colour scales;
 * sets the ggplot2 theme, so plot text is in the book's font;
-* prefers `dplyr::select()` and `dplyr::filter()` when **conflicted** is
-  installed;
+* defines `dplyr::select()`, `dplyr::filter()` and `dplyr::count()` in the
+  chapter's environment, so they mask the functions of the same names in
+  other packages (such as `stats::filter()` and `mclust::count()`);
 * defines `TeX()` as `tex()` and `theme_void()` as `theme_book_void()`, so the
   code shown in the book runs unchanged for readers, using
   `latex2exp::TeX()` and `ggplot2::theme_void()`.

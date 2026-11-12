@@ -24,8 +24,8 @@ the text column of the HTML books.}
 \item{prefer}{A named character vector of conflicts to resolve: each name is
 a function, and each value the package whose version is preferred.}
 
-\item{env}{Environment in which to define \code{TeX()} and \code{theme_void()}. The
-default is the calling environment, which is the global environment when
+\item{env}{Environment in which to define \code{TeX()}, \code{theme_void()} and the
+functions in \code{prefer}. The default is the calling environment, which is the global environment when
 \code{setup_book()} is called from a script run with \code{\link[=source]{source()}}.}
 }
 \value{
@@ -39,8 +39,9 @@ Does the setup shared by the OTexts books, at the start of each chapter:
 \item registers the plot fonts with \code{\link[=register_book_fonts]{register_book_fonts()}};
 \item sets printing and colour options with \code{\link[=set_book_options]{set_book_options()}};
 \item sets the ggplot2 theme with \code{\link[=set_book_theme]{set_book_theme()}};
-\item resolves conflicts between packages with \code{\link[conflicted:conflict_prefer]{conflicted::conflict_prefer()}},
-if \pkg{conflicted} is installed;
+\item defines the functions in \code{prefer} in \code{env}, so they mask functions of the
+same names in any attached package (knitr re-attaches cached packages
+before the first chunk);
 \item defines \code{TeX()} as \code{\link[=tex]{tex()}} and \code{theme_void()} as \code{\link[=theme_book_void]{theme_book_void()}} in
 \code{env}, so chunks can call \code{TeX()} and \code{theme_void()}, and readers can run
 the same code with \code{\link[latex2exp:TeX]{latex2exp::TeX()}} and \code{\link[ggplot2:theme_void]{ggplot2::theme_void()}}.

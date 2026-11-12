@@ -22,7 +22,6 @@ Imports:
     rlang,
     systemfonts (>= 1.0.0)
 Suggests:
-    conflicted,
     ggraph,
     ggrepel,
     ragg,

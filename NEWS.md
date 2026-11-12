@@ -1,5 +1,8 @@
 # otexts 0.1.0
 
+* `setup_book()` defines preferred functions in `env`, so
+  they take precedence over functions of the same names in attached packages. Similar to using `conflicted::conflict_prefer` but avoids problems due to `knitr` caching.
+
 * First version, with the setup shared by the OTexts books: `setup_book()`,
   `register_book_fonts()`, `set_book_options()`, `set_book_theme()`,
   `book_colours()`, `theme_book_void()`, `tex()`, `cache()` and `html_math()`.
